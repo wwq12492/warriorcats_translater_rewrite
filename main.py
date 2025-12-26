@@ -3,9 +3,10 @@ import aiohttp
 import aiofiles
 import csv
 import os
+import argparse
 import yaml
 import sys
-from pydantic import ConfigDict,ValidationError,Field,field_validator
+from pydantic import ConfigDict,ValidationError,Field
 from pydantic_settings import BaseSettings
 
 CONFIG = None # 配置参数
@@ -37,4 +38,9 @@ if __name__ == "__main__":
 
             print(f"选项 {error_location} (用户输入：{error['input']}) 错误: {error['msg']}")
 
-    print(CONFIG)
+    # epub读取（翻译数据准备）
+    parser = argparse.ArgumentParser(description="A Warrior Cats novel translater")
+    parser.add_argument("file",nargs="+",help="待翻译单文件名/文件列表，或者一个包含文件路径列表的txt")
+    args = parser.parse_args()
+
+    print(args.file)
