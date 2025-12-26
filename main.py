@@ -11,7 +11,7 @@ class Config(BaseModel):
     api_key: str # api密钥
     prompt: str # 提示词，用“|”多行表示，末尾留换行符
     max_connections: int | None # 最大并发网络请求量（默认为4）
-    output_directory: str | None # 翻译完成epub输出目录（默认为程序所在目录下）
+    output_directory: str # 翻译完成epub输出目录
 
 if __name__ == "__main__":
     CONFIG = None # 配置参数
