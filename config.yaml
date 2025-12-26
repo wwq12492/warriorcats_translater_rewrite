@@ -1,0 +1,6 @@
+apiKey: "string" # api密钥
+prompt: | # 提示词
+  string
+maxWorkers: 0 # 最大并发网络请求量
+outputDirectory: "string"
+# 待完善&分类
