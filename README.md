@@ -9,98 +9,12 @@
 - sys实现翻译参数的传入（不用所有东西都写在config里，比如要翻译的书）
 
 ### 专有名词替换
-#### 逻辑
 1. 依据`glossary.csv`的内容先将**已知的专有名词替换成已知中文**并且用**大括号和特殊字符标记**
 2. 给ai提供system_prompt，要求不翻译已标记的专有名词，同时**发现新的专有名词**标记出并且保留英文
 3. 返回的结果立即去除`{ᏇᎢ__xxxxxxxx__ᎢᏇ}`样式
 4. 手动替换阶段ai新发现的词汇征求用户对应译文之后创建对应中英文对照键值对并且存入`glossary.csv`
 
 > 更新差异：`glossary.csv`（原`translate_dict.json`）在手动替换新的专有名词过程中不发挥作用，只是被扩充。他只在初始的已知专有名词替换和标记标记阶段被用于匹配已知专有名词
-
-#### prompt设计
-```markdown
-你正在将英文小说《猫武士》系列翻译为中文。请严格遵循以下规则：
-
-### 术语处理规则
-1. **特殊标识保留**
-   - 格式为由大括号包裹的如示例 `{ᏇᎢ__xxxxxxxx__ᎢᏇ}` 的文本是受保护术语，**原样保留不翻译**
-   - 示例：`{ᏇᎢ__火星__ᎢᏇ}` → 保持原样
-
-2. **专有名词处理**
-   - 猫名：保留英文原名，用{}标记
-     - 示例：Firestar → {Firestar}
-     - 示例：Brambleclaw → {Brambleclaw}
-   
-   - 族群名：保留英文原名，用{}标记
-     - 示例：ThunderClan → {ThunderClan}
-     - 示例：StarClan → {StarClan}
-     - 示例：the Sisters → {the Sisters}
-   
-   - 地名/物品名：保留英文原名，用{}标记
-     - 示例：Twoleg → {Twoleg}
-     - 示例：Thunder Path → {Thunder Path}
-     - 示例：Moonstone → {Moonstone}
-   
-   - 仪式/头衔：保留英文原名，用{}标记
-     - 示例：medicine cat → {medicine cat}
-     - 示例：deputy → {deputy}
-
-3. **翻译风格要求**
-   - 猫的称呼：用"只"而非"个"，如"一只灰猫"
-   - 动作描写：用猫科动物的自然动作
-   - 对话翻译：符合中文口语习惯，避免生硬直译
-   - 战斗场面：简洁有力，多用短句
-
-4. **格式要求**
-   - 输出纯译文，**不要**加任何引导语、结束语
-   - 段落结构保持与原文一致
-   - 对话前的破折号保持为"——"
-
-### 核心语言翻译要求
-1. 保持奇幻文学风格，用词符合动物视角叙事
-2. 猫的对话要自然生动，避免过度拟人化
-3. 描述战斗、狩猎、仪式时要生动有力
-
-### 翻译示例
-原文: "Firestar looked at Graystripe, his friend from ThunderClan."
-翻译: "{Firestar}看向{Graystripe}，他在{ThunderClan}的朋友。"
-
-原文: "The Twoleg monster raced down the Thunder Path."
-翻译: {Twoleg}怪兽沿着{Thunder Path}疾驰而去。
-
-请开始翻译以下内容：
-```
-
-## 脚本参数和config options
-### 可用参数
-```bash
-python3 ./main.py [file / file1 file2 file3 ... / file_list.txt]
-```
-
-### 配置文件格式
-```yaml
-api_key: "string" 
-prompt: | 
-  string
-max_connections: 0 
-output_directory: "string"
-# 待完善&分类
-```
-
-## 项目结构
-```
-warriorcats_translator_rewrite/
-│
-├── main.py                    # 主脚本（唯一需要执行的）
-├── config.yaml                     # 配置文件
-├── glossary.csv                    # 术语表（CSV易编辑）
-├── README.md                       # 使用说明
-├── LICENSE
-└── cache/                          # 缓存目录（自动创建）
-    ├── bookA.json
-    ├── bookB.json
-    └── bookC.json
-```
 
 ## 用户工作流
 ### 前置步骤
