@@ -8,6 +8,7 @@ import argparse
 import yaml
 import sys
 from pydantic import ValidationError
+import json
 
 from modules.schema import Config,CliArgs
 from modules.epub_read import extract_chapters
@@ -54,3 +55,17 @@ if __name__ == "__main__":
                 item.unlink() # 可能无法删除目录
     else:
         cache_path.mkdir()
+
+    # 读取epub数据并且筛选需要翻译的章节
+    data_to_translate = {}
+    for item in args["translate_file"]:
+        data_to_translate[str(Path(item).stem)] = extract_chapters(str(Path(item).expanduser().resolve()))
+
+    for item in Path("./cache").iterdir():
+        with open(str(item)) as f:
+            data: dict = json.load(f)
+            for chapter,content in data.items():
+                if chapter in data_to_translate[item.stem]:
+                    del data_to_translate[item.stem][chapter]
+        if data_to_translate[item.stem] == {}:
+            del data_to_translate[item.stem]
