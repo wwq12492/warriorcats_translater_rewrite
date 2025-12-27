@@ -10,6 +10,7 @@ import sys
 from pydantic import ValidationError
 
 from modules.schema import Config,CliArgs
+from modules.epub_read import extract_chapters
 
 CONFIG = None # 配置参数
 
