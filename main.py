@@ -7,8 +7,9 @@ from pathlib import Path
 import argparse
 import yaml
 import sys
-from modules.schema import Config,CliArgs
 from pydantic import ValidationError
+
+from modules.schema import Config,CliArgs
 
 CONFIG = None # 配置参数
 
