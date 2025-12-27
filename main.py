@@ -61,7 +61,7 @@ if __name__ == "__main__":
     for item in args["translate_file"]:
         data_to_translate[str(Path(item).stem)] = extract_chapters(str(Path(item).expanduser().resolve())) # 获取 {chapter: content,...}格式的单本书数据，并且存入待翻译序列
 
-    for item in Path("./cache").iterdir(): # 遍历所有已经存在的cache
+    for item in cache_path.iterdir(): # 遍历所有已经存在的cache
         with open(str(item)) as f:
             data: dict[str,str] = json.load(f)
             for chapter,content in data.items(): # 如果有这本书（这个cache文件）的这个章节，删除data_to_translate中对应书的章节
