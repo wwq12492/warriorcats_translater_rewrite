@@ -57,17 +57,18 @@ class CliArgs(BaseModel):
                     txt_pathlist = [item for item in filedata.splitlines() if item.strip()]
                 
                 for path in txt_pathlist:
-                    resolved_path = Path(path).expanduser().resolve() # 解析路径为标准路径
+                    resolved_list_path = Path(path).expanduser().resolve() # 解析路径为标准路径
                     
-                    if resolved_path.suffix != ".epub":
-                        raise ValueError("文件类型错误：只支持epub")
+                    if resolved_list_path.suffix != ".epub":
+                        raise ValueError(f"文件{resolved_list_path}类型错误：只支持epub")
 
-                    if not resolved_path.exists():
-                        raise FileNotFoundError(f"路径不存在: {resolved_path}")
+                    if not resolved_list_path.exists():
+                        raise FileNotFoundError(f"路径不存在: {resolved_list_path}")
                     
                     # 验证读权限
-                    if not os.access(resolved_path, os.R_OK):
-                        raise PermissionError(f"无读权限: {resolved_path}")
+                    if not os.access(resolved_list_path, os.R_OK):
+                        raise PermissionError(f"无读权限: {resolved_list_path}")
+                return txt_pathlist
                 
             elif resolved_path.suffix==".epub":
                 pass
@@ -86,7 +87,6 @@ class CliArgs(BaseModel):
                 # 验证读权限
                 if not os.access(resolved_path, os.R_OK):
                     raise PermissionError(f"无读权限: {resolved_path}")
-
         return v
 
     model_config = ConfigDict(strict = True)
