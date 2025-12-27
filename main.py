@@ -38,7 +38,7 @@ class Config(BaseSettings):
 
     model_config = ConfigDict(strict = True,env_file = ".env",env_file_encoding = "utf-8")
 
-# 输入参数教研
+# 输入参数校验
 class CliArgs(BaseModel):
     translate_file: list[str] = Field(description="待翻译的单文件路径/文件路径列表，或者一个由换行隔开的文件路径列表txt文件路径")
     
@@ -49,7 +49,7 @@ class CliArgs(BaseModel):
             resolved_path = Path(v[0]).expanduser().resolve() # 解析路径为标准路径
             
             if not resolved_path.exists():
-                    raise FileNotFoundError(f"路径不存在: {resolved_path}")
+                raise FileNotFoundError(f"路径不存在: {resolved_path}")
                 
             # 验证读权限
             if not os.access(resolved_path, os.R_OK):
@@ -58,7 +58,11 @@ class CliArgs(BaseModel):
             if resolved_path.suffix==".txt":
                 txt_pathlist = None
                 with open(resolved_path,"r",encoding="utf-8") as f:
-                    txt_pathlist = f.read().splitlines()
+                    filedata = f.read()
+                    if not filedata.strip():
+                        raise ValueError("文件列表为空")
+                    
+                    txt_pathlist = [item for item in filedata.splitlines() if item.strip()]
                 
                 for path in txt_pathlist:
                     resolved_path = Path(path).expanduser().resolve() # 解析路径为标准路径
