@@ -1,5 +1,4 @@
 # api_key: ""
-prompt: |
-  string
+#prompt: |
 max_connections: 4
 # output_directory: ""

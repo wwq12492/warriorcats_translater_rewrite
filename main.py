@@ -123,4 +123,4 @@ if __name__ == "__main__":
     parser.add_argument("translate_file",nargs="+",help="待翻译单文件名/文件列表，或者一个包含文件路径列表的txt")
     args = CliArgs.model_validate(vars(parser.parse_args())).model_dump()
 
-    print(args["translate_file"])
+    print(CONFIG)
