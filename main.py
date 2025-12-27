@@ -3,6 +3,7 @@ import aiohttp
 import aiofiles
 import csv
 import os
+from pathlib import Path
 import argparse
 import yaml
 import sys
@@ -35,4 +36,19 @@ if __name__ == "__main__":
     parser.add_argument("translate_file",nargs="+",help="待翻译单文件名/文件列表，或者一个包含文件路径列表的txt")
     args = CliArgs.model_validate(vars(parser.parse_args())).model_dump()
 
-    print(CONFIG)
+    # diff待翻译文件列表和cache,删除无用cache
+    cache_path = Path("./cache").expanduser().resolve()
+    if cache_path.exists():
+        # 获取所有文件和目录
+        for item in cache_path.iterdir():
+            if item.is_file() and item.suffix == ".json":
+                flag = True # 是否删除
+                for compare in args["translate_file"]:
+                    if Path(compare).stem == item.stem:
+                        flag = False
+                if flag == True:
+                    item.unlink()
+            else:
+                item.unlink() # 可能无法删除目录
+    else:
+        cache_path.mkdir()
